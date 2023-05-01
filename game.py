@@ -34,15 +34,15 @@ pieces_dict[king] = "K"
 turn = Turn.WHITE
 
 def print_board(pieces_dict: dict, print_turn=False):
-    board_str = "+-------------+\n"
+    board_str = "+---------------+\n"
 
     for y in range(BOARD_SIZE):
-        board_str += "|"
+        board_str += "| "
         for x in range(BOARD_SIZE):
             empty_char = "#" if (x, y) in ESCAPE_SQUARES \
                 else "@" if (x, y) == THRONE_SQUARE else "."
             
-            end_char = "|" if x == BOARD_SIZE - 1 else " "
+            end_char = f" |{y}" if x == BOARD_SIZE - 1 else " "
 
             if val := pieces_dict.get((x, y)):
                 board_str += val + end_char
@@ -52,7 +52,8 @@ def print_board(pieces_dict: dict, print_turn=False):
             
         board_str += "\n"
     
-    board_str += "+-------------+\n"
+    board_str += "+---------------+\n"
+    board_str += "  0 1 2 3 4 5 6\n"
     if print_turn:
         board_str += str(turn) + "\n"
 
