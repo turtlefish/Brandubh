@@ -1,6 +1,6 @@
 import unittest
 
-from game import check_capture, Turn
+from game import Turn, check_capture, get_piece_moves
 
 
 class TestCheckCapture(unittest.TestCase):
@@ -140,6 +140,78 @@ class TestCheckCapture(unittest.TestCase):
 
         check_capture(pieces_dict, dest, turn)
         self.assertEqual(pieces_dict, {(2, 1): "b", (3, 1): "w", (4, 1): "K"})
+
+
+class TestMovement(unittest.TestCase):
+    pieces_dict = {
+        (1, 0): "w",
+        (3, 0): "w",
+        (5, 3): "b",
+        (5, 6): "b",
+        (1, 5): "b",
+        (3, 5): "K",
+    }
+
+    pieces_dict_king_throne = {(3, 3): "K", (3, 0): "w", (5, 3): "w"}
+
+    def test_white_moves(self):
+        print("White moves")
+
+        moves = get_piece_moves(TestMovement.pieces_dict, (1, 0))
+        self.assertEqual(moves, [(2, 0), (1, 1), (1, 2), (1, 3), (1, 4)])
+
+        moves = get_piece_moves(TestMovement.pieces_dict, (3, 0))
+        self.assertEqual(moves, [(4, 0), (5, 0), (2, 0), (3, 1), (3, 2), (3, 4)])
+
+        moves = get_piece_moves(TestMovement.pieces_dict_king_throne, (3, 0))
+        self.assertEqual(moves, [(4, 0), (5, 0), (2, 0), (1, 0), (3, 1), (3, 2)])
+
+    def test_black_moves(self):
+        print("Black moves")
+
+        moves = get_piece_moves(TestMovement.pieces_dict, (5, 3))
+        self.assertEqual(
+            moves,
+            [
+                (6, 3),
+                (4, 3),
+                (2, 3),
+                (1, 3),
+                (0, 3),
+                (5, 4),
+                (5, 5),
+                (5, 2),
+                (5, 1),
+                (5, 0),
+            ],
+        )
+
+        moves = get_piece_moves(TestMovement.pieces_dict, (1, 5))
+        self.assertEqual(
+            moves, [(2, 5), (0, 5), (1, 6), (1, 4), (1, 3), (1, 2), (1, 1)]
+        )
+
+        moves = get_piece_moves(TestMovement.pieces_dict, (5, 6))
+        self.assertEqual(moves, [(4, 6), (3, 6), (2, 6), (1, 6), (5, 5), (5, 4)])
+
+        moves = get_piece_moves(TestMovement.pieces_dict_king_throne, (5, 3))
+        self.assertEqual(
+            moves, [(6, 3), (4, 3), (5, 4), (5, 5), (5, 6), (5, 2), (5, 1), (5, 0)]
+        )
+
+    def test_king_moves(self):
+        print("King moves")
+        moves = get_piece_moves(TestMovement.pieces_dict, (3, 5))
+        self.assertEqual(
+            moves,
+            [(4, 5), (5, 5), (6, 5), (2, 5), (3, 6), (3, 4), (3, 3), (3, 2), (3, 1)],
+        )
+
+        moves = get_piece_moves(TestMovement.pieces_dict_king_throne, (3, 3))
+        self.assertEqual(
+            moves,
+            [(4, 3), (2, 3), (1, 3), (0, 3), (3, 4), (3, 5), (3, 6), (3, 2), (3, 1)],
+        )
 
 
 if __name__ == "__main__":

@@ -1,6 +1,5 @@
 from enum import Enum
 import random
-import time
 
 
 class Turn(Enum):
@@ -16,14 +15,13 @@ KING_CHAR, WHITE_CHAR, BLACK_CHAR = "K", "w", "b"
 ADJACENCY_MASKS = [(-1, 0), (1, 0), (0, -1), (0, 1)]
 
 
-# white_pieces = [(4, 3), (2, 3), (3, 4), (3, 2)]
+white_pieces = [(4, 3), (2, 3), (3, 4), (3, 2)]
+king = (3, 3)
+black_pieces = [(0, 3), (1, 3), (5, 3), (6, 3), (3, 0), (3, 1), (3, 5), (3, 6)]
+
+# white_pieces = [(3, 0)]
 # king = (3, 3)
-# black_pieces = [(0, 3), (1, 3), (5, 3), (6, 3), (3, 0), (3, 1), (3, 5), (3, 6)]
-
-white_pieces = [(2, 1), (6, 1)]
-king = (4, 3)
-black_pieces = [(3, 1)]
-
+# black_pieces = [(5, 3)]
 
 pieces = [white_pieces, king, black_pieces]
 
@@ -36,7 +34,7 @@ for piece in black_pieces:
 
 pieces_dict[king] = "K"
 
-turn = Turn.WHITE  # CHANGE BACK
+turn = Turn.BLACK
 
 
 def print_board(pieces_dict: dict, print_turn=False):
@@ -45,9 +43,14 @@ def print_board(pieces_dict: dict, print_turn=False):
     for y in range(BOARD_SIZE):
         board_str += "| "
         for x in range(BOARD_SIZE):
-            empty_char = "#" if (x, y) in ESCAPE_SQUARES \
-                else "@" if (x, y) == THRONE_SQUARE else "."
-            
+            empty_char = (
+                "#"
+                if (x, y) in ESCAPE_SQUARES
+                else "@"
+                if (x, y) == THRONE_SQUARE
+                else "."
+            )
+
             end_char = f" |{y}" if x == BOARD_SIZE - 1 else " "
 
             if val := pieces_dict.get((x, y)):
@@ -57,7 +60,7 @@ def print_board(pieces_dict: dict, print_turn=False):
                 board_str += empty_char + end_char
 
         board_str += "\n"
-    
+
     board_str += "+---------------+\n"
     board_str += "  0 1 2 3 4 5 6\n"
     if print_turn:
@@ -96,7 +99,7 @@ def get_piece_moves(pieces_dict: dict, piece: tuple[int]):
         if (dx, piece[1]) in pieces_dict or (
             (dx, piece[1]) in SPECIAL_SQUARES and pieces_dict[piece] != "K"
         ):
-            if (dx, piece[1]) == THRONE_SQUARE:  # fix my throne square based movement
+            if (dx, piece[1]) == THRONE_SQUARE and THRONE_SQUARE not in pieces_dict:
                 continue
 
             else:
@@ -108,7 +111,7 @@ def get_piece_moves(pieces_dict: dict, piece: tuple[int]):
         if (dx, piece[1]) in pieces_dict or (
             (dx, piece[1]) in SPECIAL_SQUARES and pieces_dict[piece] != "K"
         ):
-            if (dx, piece[1]) == THRONE_SQUARE:
+            if (dx, piece[1]) == THRONE_SQUARE and THRONE_SQUARE not in pieces_dict:
                 continue
 
             else:
@@ -120,7 +123,7 @@ def get_piece_moves(pieces_dict: dict, piece: tuple[int]):
         if (piece[0], dy) in pieces_dict or (
             (piece[0], dy) in SPECIAL_SQUARES and pieces_dict[piece] != "K"
         ):
-            if (piece[0], dy) == THRONE_SQUARE:
+            if (piece[0], dy) == THRONE_SQUARE and THRONE_SQUARE not in pieces_dict:
                 continue
 
             else:
@@ -132,7 +135,7 @@ def get_piece_moves(pieces_dict: dict, piece: tuple[int]):
         if (piece[0], dy) in pieces_dict or (
             (piece[0], dy) in SPECIAL_SQUARES and pieces_dict[piece] != "K"
         ):
-            if (piece[0], dy) == THRONE_SQUARE:
+            if (piece[0], dy) == THRONE_SQUARE and THRONE_SQUARE not in pieces_dict:
                 continue
 
             else:
@@ -166,20 +169,21 @@ def check_capture(pieces_dict: dict, dest: tuple[int], turn: Turn):
 
 
 # while True:
-#     # make_random_move(pieces_dict, turn)
-#     # print("king moves:", get_piece_moves(pieces_dict, white_pieces[0]))
-#     # moves = {move: "O" for move in get_piece_moves(pieces_dict, white_pieces[0])}
-#     print_board(pieces_dict, True)
-#     # print_board(moves)
-#     origin = tuple(int(_) for _ in input("origin: ").split(","))
-#     dest = tuple(int(_) for _ in input("dest: ").split(","))
-#     move_piece(origin, dest)
-#     print(f"{pieces=}")
+#     print_board(pieces_dict, print_turn=True)
 #     print(f"{pieces_dict=}")
-#     input()
 
-# fix my throne square based movement
+#     origin = tuple(int(_) for _ in input("origin: ").split(","))
+#     while origin not in pieces_dict:
+#         origin = tuple(int(_) for _ in input("origin: ").split(","))
 
-# origin = tuple(int(_) for _ in input("origin: ").split(","))
-# dest = tuple(int(_) for _ in input("dest: ").split(","))
-# move_piece(origin, dest)
+#     dest = tuple(int(_) for _ in input("dest: ").split(","))
+#     while dest not in get_piece_moves(pieces_dict, origin):
+#         dest = tuple(int(_) for _ in input("dest: ").split(","))
+
+#     # moves = get_piece_moves(pieces_dict, origin)
+#     # moves_board = {move: "O" for move in moves}
+#     # print(f"{moves=}")
+#     # print_board(moves_board)
+
+#     # make_random_move(pieces_dict, turn)
+#     move_piece(origin, dest)
